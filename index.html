@@ -7,9 +7,9 @@
     <script src="/uv/uv.config.js"></script>
     <script src="/baremux/index.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
             --sword: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Crect x='16' y='2' width='4' height='22' rx='1' fill='%23cc1111'/%3E%3Crect x='10' y='22' width='16' height='3' rx='1.5' fill='%23660000'/%3E%3Crect x='15' y='25' width='6' height='8' rx='1' fill='%23440000'/%3E%3Cpolygon points='18,2 16,6 20,6' fill='%23ff6666'/%3E%3C/svg%3E") 18 2;
+            --accent: #cc2222;
         }
         body, html {
             background: #0d0000;
@@ -18,8 +18,12 @@
             color: #d4d4d4;
             cursor: var(--sword), default;
         }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0000; }
+        ::-webkit-scrollbar-thumb { background: #cc2222; border-radius: 50px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff4444; }
+        ::-webkit-scrollbar-corner { background: #0a0000; }
 
-        
         #topbar {
             position: sticky; top: 0; z-index: 200;
             background: #120000;
@@ -44,8 +48,22 @@
         }
         .nav-btn-top:hover { background: #1e0000; color: #ee4444; }
         #topbar-spacer { flex: 1; }
+        #floating-bar {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 300;
+            display: flex;
+            gap: 12px;
+            background: rgba(10, 0, 0, 0.85);
+            border: 1px solid #3a0a0a;
+            border-radius: 50px;
+            padding: 8px 16px;
+            backdrop-filter: blur(8px);
+        }
         .tab-toggle-btn {
-            font-family: inherit; font-size: 12px; padding: 4px 12px;
+            font-family: inherit; font-size: 13px; padding: 8px 20px;
             border-radius: 50px; cursor: var(--sword), pointer;
             transition: all 0.12s; white-space: nowrap; flex-shrink: 0;
         }
@@ -54,12 +72,11 @@
         }
         #proxy-tab-btn:hover { background: #260000; border-color: #881111; color: #ee4444; }
         #chat-tab-btn {
-            background: #1a0033; border: 1px solid #7700cc; color: #cc44ff;
+            background: #1a0000; border: 1px solid #aa2222; color: #ee4444;
             margin-left: 4px;
         }
-        #chat-tab-btn:hover { background: #220044; border-color: #aa00ff; color: #ee88ff; }
+        #chat-tab-btn:hover { background: #220044; border-color: #aa00ff; color: #ff8888; }
 
-        
         .fullpanel {
             display: none; flex-direction: column;
             position: fixed; top: 38px; left: 0; right: 0; bottom: 0;
@@ -67,7 +84,6 @@
         }
         .fullpanel.open { display: flex; }
 
-        
         #proxy-ui { background: #0a0000; }
 
         #proxy-nav {
@@ -115,7 +131,6 @@
         }
         .ptab-new:hover { border-color: #551111; color: #aa3333; }
 
-        
         #proxy-options-bar {
             display: flex; align-items: center; gap: 8px; padding: 5px 12px;
             background: #080000; border-bottom: 1px solid #1a0303; flex-shrink: 0;
@@ -180,117 +195,117 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         #proxy-loading span { color: #4a1a1a; font-size: 12px; letter-spacing: 2px; }
 
-       
-        #chat-ui { background: #07000f; }
+        #chat-ui { background: #0f0000; }
 
         #chat-header {
             display: flex; align-items: center; gap: 10px; padding: 10px 16px;
-            background: #0e0020; border-bottom: 1px solid #4400aa; flex-shrink: 0;
+            background: #1a0000; border-bottom: 1px solid #661111; flex-shrink: 0;
         }
-        #chat-header-title { font-size: 15px; font-weight: 700; color: #dd88ff; letter-spacing: 1px; }
-        #chat-header-status { font-size: 11px; color: #7733aa; margin-left: auto; }
+        #chat-header-title { font-size: 15px; font-weight: 700; color: #ff6666; letter-spacing: 1px; }
+        #chat-header-status { font-size: 11px; color: #994444; margin-left: auto; }
         #chat-online-dot {
-            width: 8px; height: 8px; border-radius: 50%; background: #7733aa; flex-shrink: 0;
+            width: 8px; height: 8px; border-radius: 50%; background: #994444; flex-shrink: 0;
         }
-        #chat-online-dot.connected { background: #cc44ff; box-shadow: 0 0 6px #aa00ff; }
+        #chat-online-dot.connected { background: #ee4444; box-shadow: 0 0 6px #aa00ff; }
 
         #chat-setup {
             flex: 1; display: flex; flex-direction: column;
             align-items: center; justify-content: center; gap: 14px; padding: 24px;
         }
-        #chat-setup h3 { color: #cc44ff; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
-        #chat-setup p { color: #7733aa; font-size: 12px; text-align: center; max-width: 400px; line-height: 1.6; }
+        #chat-setup h3 { color: #ee4444; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+        #chat-setup p { color: #994444; font-size: 12px; text-align: center; max-width: 400px; line-height: 1.6; }
         .chat-setup-form { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 420px; }
         .chat-setup-input {
-            background: #0e0020; border: 1px solid #4400aa; color: #e0b0ff;
+            background: #1a0000; border: 1px solid #661111; color: #ffbbbb;
             font-family: inherit; font-size: 13px; padding: 10px 14px;
             border-radius: 50px; outline: none; transition: border-color 0.15s;
             cursor: var(--sword), text;
         }
-        .chat-setup-input::placeholder { color: #3d1166; }
+        .chat-setup-input::placeholder { color: #4a1a1a; }
         .chat-setup-input:focus { border-color: #aa00ff; }
-        .chat-setup-input.firebase-key { font-size: 11px; font-family: monospace; color: #bb88ff; }
+        .chat-setup-input.firebase-key { font-size: 11px; font-family: monospace; color: #dd8888; }
         .chat-setup-row { display: flex; gap: 8px; }
         .chat-setup-btn {
-            flex: 1; background: #1a0033; border: 1px solid #7700cc; color: #cc44ff;
+            flex: 1; background: #1a0000; border: 1px solid #aa2222; color: #ee4444;
             font-family: inherit; font-size: 13px; font-weight: 600; padding: 10px;
             border-radius: 50px; cursor: var(--sword), pointer; transition: all 0.12s;
         }
-        .chat-setup-btn:hover { background: #220044; border-color: #aa00ff; color: #ee88ff; }
-        .chat-setup-btn.primary { background: #330066; border-color: #aa00ff; color: #ee88ff; border-radius: 50px; }
+        .chat-setup-btn:hover { background: #220044; border-color: #aa00ff; color: #ff8888; }
+        .chat-setup-btn.primary { background: #330066; border-color: #aa00ff; color: #ff8888; border-radius: 50px; }
         .chat-setup-btn.primary:hover { background: #440088; }
         .chat-firebase-note {
-            background: #0e0020; border: 1px solid #2a0066; border-radius: 4px;
+            background: #1a0000; border: 1px solid #3a0a0a; border-radius: 4px;
             padding: 12px 14px; font-size: 11px; color: #5522aa; line-height: 1.7;
             font-family: monospace; width: 100%; max-width: 420px;
         }
-        .chat-firebase-note b { color: #9955dd; }
+        .chat-firebase-note b { color: #bb5555; }
 
         #chat-main { flex: 1; display: none; flex-direction: column; overflow: hidden; }
         #chat-main.show { display: flex; }
 
         #chat-rooms-bar {
             display: flex; align-items: center; gap: 4px; padding: 6px 12px;
-            background: #0a001a; border-bottom: 1px solid #2a0066; flex-shrink: 0;
+            background: #120000; border-bottom: 1px solid #3a0a0a; flex-shrink: 0;
             overflow-x: auto; scrollbar-width: none;
         }
         #chat-rooms-bar::-webkit-scrollbar { display: none; }
         .chat-room-btn {
-            background: none; border: 1px solid #1e0044; color: #6622aa;
+            background: none; border: 1px solid #2a0606; color: #883333;
             font-family: inherit; font-size: 12px; padding: 3px 10px;
             border-radius: 50px; cursor: var(--sword), pointer; white-space: nowrap;
             transition: all 0.12s;
         }
-        .chat-room-btn.active { background: #1a0033; border-color: #7700cc; color: #cc44ff; }
-        .chat-room-btn:hover { border-color: #550099; color: #aa33ee; }
+        .chat-room-btn.active { background: #1a0000; border-color: #aa2222; color: #ee4444; }
+        .chat-room-btn:hover { border-color: #771111; color: #cc3333; }
         .chat-room-add {
-            background: none; border: 1px dashed #1e0044; color: #3d1166;
+            background: none; border: 1px dashed #2a0606; color: #4a1a1a;
             font-size: 16px; width: 24px; height: 24px; border-radius: 50px;
             cursor: var(--sword), pointer; display: flex; align-items: center;
             justify-content: center; transition: all 0.12s; flex-shrink: 0;
         }
-        .chat-room-add:hover { border-color: #550099; color: #9933cc; }
+        .chat-room-add:hover { border-color: #771111; color: #bb4444; }
 
         #chat-messages {
             flex: 1; overflow-y: auto; padding: 14px 16px;
             display: flex; flex-direction: column; gap: 10px;
-            scrollbar-width: thin; scrollbar-color: #2a0066 transparent;
+            scrollbar-width: thin; scrollbar-color: #cc2222 transparent;
         }
-        #chat-messages::-webkit-scrollbar { width: 5px; }
-        #chat-messages::-webkit-scrollbar-thumb { background: #2a0066; border-radius: 3px; }
+        #chat-messages::-webkit-scrollbar { width: 6px; }
+        #chat-messages::-webkit-scrollbar-track { background: #120000; }
+        #chat-messages::-webkit-scrollbar-thumb { background: #cc2222; border-radius: 50px; }
+        #chat-messages::-webkit-scrollbar-thumb:hover { background: #ff4444; }
 
         .chat-msg { display: flex; flex-direction: column; gap: 2px; max-width: 70%; }
         .chat-msg.own { align-self: flex-end; align-items: flex-end; }
         .chat-msg.other { align-self: flex-start; }
-        .chat-msg-meta { font-size: 10px; color: #4d1a7a; display: flex; gap: 6px; }
-        .chat-msg-name { color: #9955dd; font-weight: 600; }
+        .chat-msg-meta { font-size: 10px; color: #5a2525; display: flex; gap: 6px; }
+        .chat-msg-name { color: #bb5555; font-weight: 600; }
         .chat-msg-bubble {
-            background: #0e0020; border: 1px solid #2a0066; border-radius: 4px;
-            padding: 8px 12px; font-size: 13px; color: #d4aaff; line-height: 1.5;
+            background: #1a0000; border: 1px solid #3a0a0a; border-radius: 4px;
+            padding: 8px 12px; font-size: 13px; color: #ffaaaa; line-height: 1.5;
         }
-        .chat-msg.own .chat-msg-bubble { background: #1a0033; border-color: #6600cc; color: #eeccff; }
-        .chat-system-msg { text-align: center; font-size: 11px; color: #3d1166; padding: 4px 0; }
+        .chat-msg.own .chat-msg-bubble { background: #1a0000; border-color: #6600cc; color: #ffcccc; }
+        .chat-system-msg { text-align: center; font-size: 11px; color: #4a1a1a; padding: 4px 0; }
 
         #chat-input-row {
             display: flex; gap: 8px; padding: 10px 14px;
-            background: #0a001a; border-top: 1px solid #2a0066; flex-shrink: 0;
+            background: #120000; border-top: 1px solid #3a0a0a; flex-shrink: 0;
         }
         #chat-input {
-            flex: 1; background: #0e0020; border: 1px solid #3a0088; color: #e0b0ff;
+            flex: 1; background: #1a0000; border: 1px solid #551111; color: #ffbbbb;
             font-family: inherit; font-size: 13px; padding: 8px 13px;
             border-radius: 50px; outline: none; transition: border-color 0.15s;
             cursor: var(--sword), text;
         }
-        #chat-input::placeholder { color: #3d1166; }
-        #chat-input:focus { border-color: #8800ee; }
+        #chat-input::placeholder { color: #4a1a1a; }
+        #chat-input:focus { border-color: #cc2222; }
         #chat-send {
-            background: #330066; border: 1px solid #8800ee; color: #cc44ff;
+            background: #330066; border: 1px solid #cc2222; color: #ee4444;
             font-family: inherit; font-size: 13px; padding: 8px 16px;
             border-radius: 50px; cursor: var(--sword), pointer; transition: all 0.12s;
         }
-        #chat-send:hover { background: #440088; color: #ee88ff; }
+        #chat-send:hover { background: #440088; color: #ff8888; }
 
-     
         #games-ui { display: block; }
         #games-ui.hidden { display: none; }
         .wrap { padding: 24px 20px; max-width: 860px; margin: 0 auto; }
@@ -314,7 +329,6 @@
         .btn.toggled { border-color: #661111; color: #993333; }
         hr { border: none; border-top: 1px solid #1a0303; margin-bottom: 20px; }
 
-       
         .settings { background: #0f0000; border: 1px solid #1e0505; border-radius: 3px; padding: 16px; margin-bottom: 16px; display: none; }
         .settings.open { display: block; }
         .s-section { font-size: 10px; color: #4a1a1a; text-transform: uppercase; letter-spacing: 1.5px; margin: 14px 0 8px; }
@@ -332,7 +346,7 @@
         .s-input::placeholder { color: #3a1010; }
         .panic-btn { background: #1a0000; border: 1px solid #550000; color: #cc2222; font-family: inherit; font-size: 12px; padding: 6px 14px; border-radius: 50px; cursor: var(--sword), pointer; transition: background 0.12s, color 0.12s; width: 100%; text-align: center; }
         .panic-btn:hover { background: #2a0000; color: #ff4444; }
-        
+
         input[type=button], #sections-container input[type=button] {
             background: #0d0000 !important; background-color: #0d0000 !important;
             background-image: none !important; border: 1px solid #2a0606 !important;
@@ -362,6 +376,8 @@
 <div id="topbar">
     <span id="topbar-title">quick gms</span>
     <div id="topbar-spacer"></div>
+</div>
+<div id="floating-bar">
     <button id="proxy-tab-btn" class="tab-toggle-btn" onclick="showPanel('proxy')">proxy</button>
     <button id="chat-tab-btn" class="tab-toggle-btn" onclick="showPanel('chat')">chat</button>
 </div>
@@ -436,13 +452,11 @@
         <h3>connect to chatroom</h3>
         <p>paste your firebase config below to connect. create a free project at console.firebase.google.com and enable realtime database.</p>
         <div class="chat-firebase-note">
-            <b>// connected to kubasnap-ff8fd</b><br>
-            enter your username and room to join
+            <b>quick gms chat</b><br>
+            enter your username to join general chat
         </div>
         <div class="chat-setup-form">
-          
-            <input class="chat-setup-input" id="chat-username" type="text" placeholder="your username" maxlength="20">
-            <input class="chat-setup-input" id="chat-room-join" type="text" placeholder="room name (e.g. general)" maxlength="32">
+            <input class="chat-setup-input" id="chat-username" type="text" placeholder="your username" maxlength="20" value="">
             <div class="chat-setup-row">
                 <button class="chat-setup-btn primary" onclick="chatConnect()">connect</button>
                 <button class="chat-setup-btn" onclick="chatDemoMode()">demo (no firebase)</button>
@@ -452,8 +466,7 @@
 
     <div id="chat-main">
         <div id="chat-rooms-bar">
-            <button class="chat-room-btn active" id="room-btn-general" onclick="switchRoom('general')"># general</button>
-            <button class="chat-room-add" onclick="addRoom()">+</button>
+            <button class="chat-room-btn active" id="room-btn-general"># general</button>
         </div>
         <div id="chat-messages"></div>
         <div id="chat-input-row">
@@ -518,6 +531,13 @@
                     <input class="s-input" id="set-bg" type="text" placeholder="https://... or leave blank" oninput="onBg(this.value)">
                 </div>
             </div>
+            <div class="s-section">theme color</div>
+            <div class="s-grid-1">
+                <div class="s-row">
+                    <span class="s-name">accent color</span>
+                    <input type="color" id="set-accent-color" value="#cc2222" oninput="onAccentColor(this.value)" style="width:40px;height:24px;border:none;border-radius:4px;cursor:pointer;background:none;">
+                </div>
+            </div>
             <div class="s-section">general</div>
             <div class="s-grid">
                 <div class="s-row"><span class="s-name">animations</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
@@ -534,13 +554,17 @@
 <script src="https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@main/searchbut.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@latest/games.js"></script>
 <script>
+
 var currentPanel = 'games';
 function showPanel(name) {
     document.getElementById('games-ui').classList.toggle('hidden', name !== 'games');
     document.getElementById('proxy-ui').classList.toggle('open', name === 'proxy');
     document.getElementById('chat-ui').classList.toggle('open', name === 'chat');
-    document.getElementById('proxy-tab-btn').textContent = name === 'proxy' ? 'games' : 'proxy';
-    document.getElementById('chat-tab-btn').textContent = name === 'chat' ? 'games' : 'chat';
+    var proxyBtn = document.getElementById('proxy-tab-btn');
+    var chatBtn = document.getElementById('chat-tab-btn');
+    if (name === 'proxy') { proxyBtn.textContent = 'games'; chatBtn.textContent = 'chat'; }
+    else if (name === 'chat') { chatBtn.textContent = 'games'; proxyBtn.textContent = 'proxy'; }
+    else { proxyBtn.textContent = 'proxy'; chatBtn.textContent = 'chat'; }
     currentPanel = name;
     if (name === 'proxy' && !pReady) initProxy();
 }
@@ -593,24 +617,31 @@ function loadGames() {
 }
 function buildNav() {
     var bar = document.getElementById('topbar');
-    var titleEl = document.getElementById('topbar-title');
     var spacer = document.getElementById('topbar-spacer');
-    var proxyBtn = document.getElementById('proxy-tab-btn');
-    var chatBtn = document.getElementById('chat-tab-btn');
-    bar.innerHTML = '';
-    bar.appendChild(titleEl);
-    document.querySelectorAll('.letter-section').forEach(function(sec) {
+    var toRemove = [];
+    for (var i = 0; i < bar.children.length; i++) {
+        var child = bar.children[i];
+        if (child.classList && child.classList.contains('nav-btn-top')) {
+            toRemove.push(child);
+        }
+    }
+    toRemove.forEach(function(el) { bar.removeChild(el); });
+    var sections = document.querySelectorAll('.letter-section');
+    var insertBefore = spacer;
+    sections.forEach(function(sec) {
         var hdr = sec.querySelector('.letter-header');
         if (!hdr) return;
         var btn = document.createElement('button');
         btn.className = 'nav-btn-top';
         btn.textContent = hdr.textContent.trim();
         btn.onclick = function() { showPanel('games'); sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
-        bar.appendChild(btn);
+        bar.insertBefore(btn, insertBefore);
     });
-    bar.appendChild(spacer);
-    bar.appendChild(proxyBtn);
-    bar.appendChild(chatBtn);
+}
+function onAccentColor(val) {
+    S.accentColor = val;
+    document.documentElement.style.setProperty('--accent', val);
+    save();
 }
 function initSettings() {
     var d = S.disguise || 'none';
@@ -619,13 +650,22 @@ function initSettings() {
     document.getElementById('set-custom-favicon').value = S.customFavicon || '';
     document.getElementById('set-bg').value = S.bg || '';
     document.getElementById('set-panic-key').value = S.panicKey || 'Escape';
+    document.getElementById('set-accent-color').value = S.accentColor || '#cc2222';
     if (d === 'custom') { document.getElementById('custom-title-row').style.display = 'flex'; document.getElementById('custom-favicon-row').style.display = 'flex'; }
     applyDisguise(d); applyBackground(S.bg);
+    if (S.accentColor) document.documentElement.style.setProperty('--accent', S.accentColor);
 }
 var obs = new MutationObserver(buildNav);
 obs.observe(document.getElementById('sections-container'), { childList: true, subtree: true });
-window.addEventListener('load', function() { initSettings(); buildNav(); });
-
+window.addEventListener('load', function() {
+    initSettings();
+    buildNav();
+    var savedUser = localStorage.getItem('qgms_chat_user');
+    if (savedUser) {
+        var input = document.getElementById('chat-username');
+        if (input) input.value = savedUser;
+    }
+});
 
 var P = { wisp: 'wss://wisp.rhw.one/' };
 var pTabs = [], pActiveId = null, pReady = false, pConn = null;
@@ -734,10 +774,9 @@ function pUpdateNav() {
 }
 document.getElementById('proxy-url-bar').addEventListener('keydown', function(e) { if (e.key === 'Enter') pGo(this.value); });
 
-
 var chatUser = '';
 var chatRoom = 'general';
-var chatRooms = ['general'];
+
 var chatDb = null;
 var chatDemo = false;
 var demoMsgs = [];
@@ -745,39 +784,59 @@ var demoMsgs = [];
 function chatSetStatus(text, connected) {
     document.getElementById('chat-header-status').textContent = text;
     document.getElementById('chat-online-dot').className = connected ? 'connected' : '';
-    document.getElementById('chat-header-status').style.color = connected ? '#aa44ee' : '#7733aa';
+    document.getElementById('chat-header-status').style.color = connected ? '#aa44ee' : '#994444';
 }
 
 function chatConnect() {
     var firebaseConfig = {
-        apiKey: "AIzaSyDUhZe7ZgpjDJjEbUz-l2jR7aQnpbwN9E0",
-        authDomain: "kubasnap-ff8fd.firebaseapp.com",
-        databaseURL: "https://kubasnap-ff8fd-default-rtdb.firebaseio.com",
-        projectId: "kubasnap-ff8fd",
-        storageBucket: "kubasnap-ff8fd.firebasestorage.app",
-        messagingSenderId: "266014488104",
-        appId: "1:266014488104:web:bca857ad53705687f7671d"
+        apiKey: "AIzaSyDakMo5dNCXnoEpVdNQpss-qrITbexvnz8",
+        authDomain: "quickgmschat-4e7d0.firebaseapp.com",
+        databaseURL: "https://quickgmschat-4e7d0-default-rtdb.firebaseio.com",
+        projectId: "quickgmschat-4e7d0",
+        storageBucket: "quickgmschat-4e7d0.firebasestorage.app",
+        messagingSenderId: "752182729912",
+        appId: "1:752182729912:web:7024cd2001d363a546e84d",
+        measurementId: "G-SVKXLF8PEE"
     };
     var username = document.getElementById('chat-username').value.trim();
-    var room = document.getElementById('chat-room-join').value.trim() || 'general';
     if (!username) { alert('enter a username to connect'); return; }
     chatUser = username;
-    chatRoom = room;
-    var script = document.createElement('script');
-    script.src = 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js';
-    script.onload = function() {
-        var script2 = document.createElement('script');
-        script2.src = 'https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js';
-        script2.onload = function() {
-            try {
-                var app = firebase.initializeApp(firebaseConfig);
-                chatDb = firebase.database();
-                chatLaunch();
-            } catch(e) { alert('firebase error: ' + e.message); }
+    chatRoom = 'general';
+    localStorage.setItem('qgms_chat_user', username);
+
+    function doConnect() {
+        try {
+            if (firebase.apps && firebase.apps.length > 0) {
+                firebase.app();
+            } else {
+                firebase.initializeApp(firebaseConfig);
+            }
+            chatDb = firebase.database();
+            chatLaunch();
+        } catch(e) {
+            alert('firebase error: ' + e.message);
+            console.error(e);
+        }
+    }
+
+    if (typeof firebase !== 'undefined' && typeof firebase.database === 'function') {
+        doConnect();
+        return;
+    }
+
+    var s1 = document.createElement('script');
+    s1.src = 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js';
+    s1.onload = function() {
+        var s2 = document.createElement('script');
+        s2.src = 'https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js';
+        s2.onload = function() {
+            doConnect();
         };
-        document.head.appendChild(script2);
+        s2.onerror = function() { alert('failed to load firebase database'); };
+        document.head.appendChild(s2);
     };
-    document.head.appendChild(script);
+    s1.onerror = function() { alert('failed to load firebase app'); };
+    document.head.appendChild(s1);
 }
 
 function chatDemoMode() {
@@ -794,11 +853,10 @@ function chatLaunch() {
     document.getElementById('chat-main').classList.add('show');
     chatSetStatus('connected as ' + chatUser, true);
     if (!chatDemo && chatDb) {
-        chatDb.ref('rooms/' + chatRoom + '/messages').limitToLast(50).on('child_added', function(snap) {
+        chatDb.ref('rooms/general/messages').limitToLast(50).on('child_added', function(snap) {
             appendMsg(snap.val(), false);
         });
     }
-    switchRoom(chatRoom);
 }
 
 function sendMsg() {
@@ -808,7 +866,7 @@ function sendMsg() {
     input.value = '';
     var msg = { user: chatUser, text: text, ts: Date.now() };
     if (chatDemo) { appendMsg(msg, true); return; }
-    if (chatDb) chatDb.ref('rooms/' + chatRoom + '/messages').push(msg);
+    if (chatDb) chatDb.ref('rooms/general/messages').push(msg);
 }
 
 function appendMsg(msg, own) {
@@ -830,7 +888,6 @@ function appendMsg(msg, own) {
 
 function switchRoom(name) {
     chatRoom = name;
-    document.querySelectorAll('.chat-room-btn').forEach(function(b) { b.classList.toggle('active', b.id === 'room-btn-' + name); });
     document.getElementById('chat-messages').innerHTML = '';
     if (!chatDemo && chatDb) {
         chatDb.ref('rooms/' + name + '/messages').limitToLast(50).off();
@@ -838,19 +895,7 @@ function switchRoom(name) {
     }
 }
 
-function addRoom() {
-    var name = prompt('room name:');
-    if (!name) return;
-    name = name.replace(/[^a-z0-9_-]/gi, '').toLowerCase();
-    if (!name || chatRooms.includes(name)) return;
-    chatRooms.push(name);
-    var bar = document.getElementById('chat-rooms-bar');
-    var btn = document.createElement('button');
-    btn.className = 'chat-room-btn'; btn.id = 'room-btn-' + name;
-    btn.textContent = '# ' + name; btn.onclick = function() { switchRoom(name); };
-    bar.insertBefore(btn, bar.lastElementChild);
-    switchRoom(name);
-}
+
 </script>
 </body>
 </html>
